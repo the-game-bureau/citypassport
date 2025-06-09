@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Passport Template Generator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
+        
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 15px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
+            overflow: hidden; 
+        }
+        
+        .header { 
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); 
+            color: white; 
+            padding: 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        
+        .header h1 { font-size: 2rem; margin-bottom: 5px; font-weight: 300; }
+        .header p { opacity: 0.9; font-size: 1rem; }
+        
+        .header-nav { display: flex; gap: 10px; align-items: center; }
+        
+        .nav-btn { 
+            padding: 10px 15px; 
+            background: #3498db; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover { background: #2980b9; transform: translateY(-2px); }
+        .nav-btn.active { background: #e74c3c; }
+        .generate-btn { background: #27ae60 !important; margin-left: 20px; }
+        .generate-btn:hover { background: #229954 !important; }
+        
+        .panel-container { display: none; }
+        .panel-container.active { display: block; }
+        
+        .content { display: flex; min-height: 700px; }
+        
+        .form-panel { 
+            width: 50%; 
+            padding: 40px; 
+            background: #f8f9fa; 
+            overflow-y: auto; 
+        }
+        
+        .preview-panel { 
+            width: 50%; 
+            padding: 40px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%); 
+        }
+        
+        .form-section { 
+            margin-bottom: 30px; 
+            padding: 25px; 
+            background: white; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+        
+        .form-section h3 { 
+            color: #2c3e50; 
+            margin-bottom: 20px; 
+            font-size: 1.3rem; 
+            display: flex; 
+            align-items: center;
+        }
+        
+        .form-section h3::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .form-group { margin-bottom: 20px; }
+        
+        .form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600; 
+            color: #495057; 
+            font-size: 14px;
+        }
+        
+        .form-group input, .form-group textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #e9ecef; 
+            border-radius: 8px; 
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus, .form-group textarea:focus { 
+            outline: none; 
+            border-color: #667eea; 
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        
+        .color-input { width: 60px !important; height: 40px; border: none; border-radius: 8px; cursor: pointer; }
+        
+        .char-counter { 
+            font-size: 12px; 
+            color: #6c757d; 
+            text-align: right; 
+            margin-top: 5px; 
+        }
+        
+        /* Page Layout for Proper Passport Design */
+        .passport-spread { 
+            display: flex; 
+            gap: 10px; 
+            align-items: center; 
+        }
+        
+        .passport-page { 
+            width: 408px; 
+            height: 528px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        
+        /* Front Cover (Right side of spread) */
+        .passport-cover { 
+            background: #f5e6d3; 
+            padding: 30px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            text-align: center; 
+            height: 100%;
+        }
+        
+        .image-placeholder { 
+            width: 250px; 
+            height: 180px; 
+            background: #e9ecef; 
+            border: 2px dashed #adb5bd; 
+            border-radius: 8px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin-bottom: 20px; 
+            color: #6c757d; 
+            font-size: 1rem; 
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .image-placeholder:hover { border-color: #667eea; background: #f0f8ff; }
+        
+        .cover-image { 
+            width: 250px; 
+            height: 180px; 
+            object-fit: cover; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            border: 2px solid #ddd; 
+        }
+        
+        .cover-title { 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            color: #8b4513; 
+            margin-bottom: 15px; 
+            line-height: 1.2; 
+        }
+        
+        .cover-subtitle { 
+            font-size: 1.1rem; 
+            color: #8b4513; 
+            opacity: 0.8; 
+        }
+        
+        /* Back Cover (Left side of spread) */
+        .passport-back { 
+            background: white; 
+            padding: 30px; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100%;
+        }
+        
+        .back-title { 
+            font-size: 1.3rem; 
+            font-weight: 600; 
+            color: #2c3e50; 
+            margin-bottom: 30px; 
+            text-align: center; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+        
+        .info-line { 
+            display: flex; 
+            margin-bottom: 20px; 
+            align-items: center; 
+        }
+        
+        .info-line label { 
+            font-size: 1rem; 
+            color: #2c3e50; 
+            width: 80px; 
+            margin-right: 15px; 
+            font-weight: 500; 
+        }
+        
+        .info-line-input { 
+            flex: 1; 
+            height: 2px; 
+            border-bottom: 2px solid #2c3e50; 
+            background: transparent; 
+        }
+        
+        .instructions { 
+            margin-top: auto; 
+            font-size: 14px; 
+            color: #495057; 
+            line-height: 1.5; 
+            border-top: 1px solid #e9ecef; 
+            padding-top: 20px; 
+        }
+        
+        .instructions h4 { 
+            margin-bottom: 15px; 
+            font-size: 1rem; 
+            color: #2c3e50; 
+            font-weight: 600; 
+        }
+        
+        .instructions p { margin-bottom: 8px; }
+        
+        /* Business Grid Styles */
+        .business-panel { 
+            background: white; 
+            padding: 15px; 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            grid-template-rows: repeat(4, 1fr); 
+            gap: 4px; 
+            height: 100%;
+        }
+        
+        .business-box { 
+            border: 1px solid #ddd; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 0.6rem; 
+            text-align: center; 
+            padding: 4px; 
+            overflow: hidden; 
+            border-radius: 4px;
+        }
+        
+        .logo-box { 
+            background: #f8f9fa; 
+            transition: background 0.2s ease;
+        }
+        
+        .logo-box:hover { background: #e9ecef; }
+        
+        .stamp-box { 
+            background: #fff3cd; 
+            color: #856404; 
+            font-weight: bold; 
+            transition: background 0.2s ease;
+        }
+        
+        .stamp-box:hover { background: #ffeaa7; }
+        
+        .business-logo { 
+            width: 20px; 
+            height: 20px; 
+            object-fit: contain; 
+            margin-bottom: 2px; 
+        }
+        
+        .business-name { 
+            font-size: 0.5rem; 
+            line-height: 1.1; 
+            font-weight: 500;
+        }
+        
+        .file-input-wrapper { position: relative; display: inline-block; width: 100%; }
+        .file-input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+        
+        .file-input-display { 
+            padding: 12px; 
+            border: 2px dashed #e9ecef; 
+            border-radius: 8px; 
+            text-align: center; 
+            background: #f8f9fa; 
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .file-input-display:hover { 
+            border-color: #667eea; 
+            background: #f0f8ff; 
+        }
+        
+        .business-form { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 20px; 
+        }
+        
+        .business-item { 
+            padding: 15px; 
+            background: white; 
+            border-radius: 8px; 
+            border: 2px solid #e9ecef; 
+            transition: border-color 0.3s ease;
+        }
+        
+        .business-item:hover { border-color: #667eea; }
+        
+        .business-item h4 { 
+            color: #2c3e50; 
+            margin-bottom: 10px; 
+            font-size: 1rem; 
+        }
+        
+        @media (max-width: 768px) {
+            .content { flex-direction: column; }
+            .form-panel, .preview-panel { width: 100%; }
+            .passport-spread { flex-direction: column; }
+            .passport-page { 
+                width: 100%; 
+                max-width: 350px; 
+                height: auto; 
+                aspect-ratio: 408/528; 
+            }
+            .header { flex-direction: column; gap: 15px; text-align: center; }
+            .header-nav { flex-wrap: wrap; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>City Passport Generator</h1>
+                <p>Create themed stamp collection passports for local businesses</p>
+            </div>
+            <div class="header-nav">
+                <button class="nav-btn active" onclick="showPanel(1)">Front Cover</button>
+                <button class="nav-btn" onclick="showPanel(2)">Back Cover</button>
+                <button class="nav-btn" onclick="showPanel(3)">Inside Left</button>
+                <button class="nav-btn" onclick="showPanel(4)">Inside Right</button>
+                <button class="nav-btn generate-btn" onclick="generatePDFs()">📄 Generate PDFs</button>
+            </div>
+        </div>
+
+        <!-- Panel 1: Front Cover -->
+        <div class="panel-container active" id="panel1">
+            <div class="content">
+                <div class="form-panel">
+                    <div class="form-section">
+                        <h3>Front Cover</h3>
+                        <div class="form-group">
+                            <label for="theme">Theme Name</label>
+                            <input type="text" id="theme" placeholder="Summer" maxlength="20" onkeyup="updateFrontCover()">
+                            <div class="char-counter"><span id="themeCount">0</span>/20</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="city">City Name</label>
+                            <input type="text" id="city" placeholder="New Orleans" maxlength="25" onkeyup="updateFrontCover()">
+                            <div class="char-counter"><span id="cityCount">0</span>/25</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="district">District/Area</label>
+                            <input type="text" id="district" placeholder="CBD" maxlength="20" onkeyup="updateFrontCover()">
+                            <div class="char-counter"><span id="districtCount">0</span>/20</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="subtitle">Passport Subtitle</label>
+                            <input type="text" id="subtitle" placeholder="Collect stamps from local businesses" maxlength="50" onkeyup="updateFrontCover()">
+                            <div class="char-counter"><span id="subtitleCount">0</span>/50</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="coverImage">Cover Image</label>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="coverImage" accept="image/*" class="file-input" onchange="handleImageUpload(this)">
+                                <div class="file-input-display">📸 Click to upload cover image</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Design Colors</h3>
+                        <div class="form-group">
+                            <label for="bgColor">Background Color</label>
+                            <input type="color" id="bgColor" value="#f5e6d3" class="color-input" onchange="updateFrontCover()">
+                        </div>
+                        <div class="form-group">
+                            <label for="textColor">Text Color</label>
+                            <input type="color" id="textColor" value="#8b4513" class="color-input" onchange="updateFrontCover()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-panel">
+                    <div class="passport-page">
+                        <div class="passport-cover" id="frontCover">
+                            <div id="imageContainer">
+                                <div class="image-placeholder" id="imagePlaceholder">📸<br>Cover Image</div>
+                                <img class="cover-image" id="coverImagePreview" style="display: none;" alt="Cover Image">
+                            </div>
+                            <div class="cover-title" id="frontTitle">Summer Passport New Orleans CBD</div>
+                            <div class="cover-subtitle" id="frontSubtitle">Collect stamps from local businesses</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 2: Back Cover -->
+        <div class="panel-container" id="panel2">
+            <div class="content">
+                <div class="form-panel">
+                    <div class="form-section">
+                        <h3>Back Cover</h3>
+                        <div class="form-group">
+                            <label for="backTitle">Section Title</label>
+                            <input type="text" id="backTitle" value="Your Information" maxlength="30" onkeyup="updateBackCover()">
+                            <div class="char-counter"><span id="backTitleCount">15</span>/30</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="instructions">Instructions Text</label>
+                            <textarea id="instructions" rows="4" maxlength="200" onkeyup="updateBackCover()">1. Visit participating businesses
+2. Get stamped in the stamp box
+3. Enjoy exclusive local experiences!</textarea>
+                            <div class="char-counter"><span id="instructionsCount">103</span>/200</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-panel">
+                    <div class="passport-page">
+                        <div class="passport-back">
+                            <div class="back-title" id="backTitlePreview">YOUR INFORMATION</div>
+                            <div class="info-line">
+                                <label>Name:</label>
+                                <div class="info-line-input"></div>
+                            </div>
+                            <div class="info-line">
+                                <label>Email:</label>
+                                <div class="info-line-input"></div>
+                            </div>
+                            <div class="info-line">
+                                <label>Phone:</label>
+                                <div class="info-line-input"></div>
+                            </div>
+                            <div class="info-line">
+                                <label>Instagram:</label>
+                                <div class="info-line-input"></div>
+                            </div>
+                            <div class="instructions">
+                                <h4>Instructions:</h4>
+                                <div id="instructionsPreview">
+                                    <p>1. Visit participating businesses</p>
+                                    <p>2. Get stamped in the stamp box</p>
+                                    <p>3. Enjoy exclusive local experiences!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 3: Inside Left -->
+        <div class="panel-container" id="panel3">
+            <div class="content">
+                <div class="form-panel">
+                    <div class="form-section">
+                        <h3>Businesses 1-6</h3>
+                        <div class="business-form" id="businessForm1">
+                            <!-- Business forms 1-6 will be generated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-panel">
+                    <div class="passport-page">
+                        <div class="business-panel" id="businessGrid1">
+                            <!-- Business grid 1-6 will be generated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 4: Inside Right -->
+        <div class="panel-container" id="panel4">
+            <div class="content">
+                <div class="form-panel">
+                    <div class="form-section">
+                        <h3>Businesses 7-12</h3>
+                        <div class="business-form" id="businessForm2">
+                            <!-- Business forms 7-12 will be generated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-panel">
+                    <div class="passport-page">
+                        <div class="business-panel" id="businessGrid2">
+                            <!-- Business grid 7-12 will be generated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample business data
+        const sampleBusinesses = [
+            'Forbidden Pizza', 'Buff Beauty Bar', 'St. John Restaurant', 'Secret Spot Flowers',
+            'French Truck Coffee', 'Willa Jean', 'Manning\'s Restaurant', 'The Barrel Proof',
+            'Auction House Market', 'Emeril\'s Delmonico', 'Cochon Butcher', 'Ruby Slipper Cafe'
+        ];
+
+        let currentPanel = 1;
+
+        // Panel Navigation
+        function showPanel(num) {
+            // Hide all panels
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`panel${i}`).classList.remove('active');
+            }
+            
+            // Show selected panel
+            document.getElementById(`panel${num}`).classList.add('active');
+            
+            // Update navigation
+            const buttons = document.querySelectorAll('.nav-btn');
+            for (let i = 0; i < buttons.length - 1; i++) {
+                buttons[i].classList.remove('active');
+            }
+            buttons[num - 1].classList.add('active');
+            
+            currentPanel = num;
+            
+            // Initialize panel if needed
+            if (num === 3) {
+                generateBusinessForms(1);
+                generateBusinessGrid(1);
+            } else if (num === 4) {
+                generateBusinessForms(2);
+                generateBusinessGrid(2);
+            }
+        }
+
+        // Front Cover Functions
+        function updateFrontCover() {
+            const theme = document.getElementById('theme').value || 'Summer';
+            const city = document.getElementById('city').value || 'New Orleans';
+            const district = document.getElementById('district').value || 'CBD';
+            const subtitle = document.getElementById('subtitle').value || 'Collect stamps from local businesses';
+            const bgColor = document.getElementById('bgColor').value;
+            const textColor = document.getElementById('textColor').value;
+            
+            // Update front cover
+            document.getElementById('frontTitle').textContent = `${theme} Passport ${city} ${district}`;
+            document.getElementById('frontSubtitle').textContent = subtitle;
+            
+            // Update colors
+            document.getElementById('frontCover').style.backgroundColor = bgColor;
+            document.getElementById('frontTitle').style.color = textColor;
+            document.getElementById('frontSubtitle').style.color = textColor;
+            
+            // Update character counters
+            updateCharCounter('theme', 'themeCount');
+            updateCharCounter('city', 'cityCount');
+            updateCharCounter('district', 'districtCount');
+            updateCharCounter('subtitle', 'subtitleCount');
+        }
+
+        // Back Cover Functions
+        function updateBackCover() {
+            const backTitle = document.getElementById('backTitle').value || 'Your Information';
+            const instructions = document.getElementById('instructions').value || '';
+            
+            document.getElementById('backTitlePreview').textContent = backTitle.toUpperCase();
+            
+            const lines = instructions.split('\n');
+            let html = '';
+            for (const line of lines) {
+                if (line.trim()) {
+                    html += `<p>${line}</p>`;
+                }
+            }
+            document.getElementById('instructionsPreview').innerHTML = html;
+            
+            // Update character counters
+            updateCharCounter('backTitle', 'backTitleCount');
+            updateCharCounter('instructions', 'instructionsCount');
+        }
+
+        function handleImageUpload(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('coverImagePreview').src = e.target.result;
+                    document.getElementById('coverImagePreview').style.display = 'block';
+                    document.getElementById('imagePlaceholder').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Business Grid Functions
+        function generateBusinessForms(gridNum) {
+            const container = document.getElementById(`businessForm${gridNum}`);
+            const startIdx = gridNum === 1 ? 0 : 6;
+            const endIdx = gridNum === 1 ? 6 : 12;
+            
+            let html = '';
+            for (let i = startIdx; i < endIdx; i++) {
+                html += `
+                    <div class="business-item">
+                        <h4>Business ${i + 1}</h4>
+                        <div class="form-group">
+                            <label>Business Name</label>
+                            <input type="text" id="business${i}" placeholder="${sampleBusinesses[i]}" maxlength="25" onkeyup="updateBusinessGrid(${gridNum})">
+                        </div>
+                        <div class="form-group">
+                            <label>Logo Image</label>
+                            <input type="file" accept="image/*" onchange="handleBusinessLogo(${i}, this)">
+                        </div>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        function generateBusinessGrid(gridNum) {
+            const container = document.getElementById(`businessGrid${gridNum}`);
+            const startIdx = gridNum === 1 ? 0 : 6;
+            const endIdx = gridNum === 1 ? 6 : 12;
+            
+            container.innerHTML = '';
+            for (let i = startIdx; i < endIdx; i++) {
+                // Logo box
+                const logoBox = document.createElement('div');
+                logoBox.className = 'business-box logo-box';
+                logoBox.innerHTML = `<img id="logo${i}" class="business-logo" style="display: none;"><div class="business-name" id="name${i}">${sampleBusinesses[i]}</div>`;
+                
+                // Stamp box
+                const stampBox = document.createElement('div');
+                stampBox.className = 'business-box stamp-box';
+                stampBox.innerHTML = 'STAMP';
+                
+                container.appendChild(logoBox);
+                container.appendChild(stampBox);
+            }
+        }
+
+        function updateBusinessGrid(gridNum) {
+            const startIdx = gridNum === 1 ? 0 : 6;
+            const endIdx = gridNum === 1 ? 6 : 12;
+            
+            for (let i = startIdx; i < endIdx; i++) {
+                const input = document.getElementById(`business${i}`);
+                const nameElement = document.getElementById(`name${i}`);
+                if (input && nameElement) {
+                    nameElement.textContent = input.value || sampleBusinesses[i];
+                }
+            }
+        }
+
+        function handleBusinessLogo(index, input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const logo = document.getElementById(`logo${index}`);
+                    if (logo) {
+                        logo.src = e.target.result;
+                        logo.style.display = 'block';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Utility Functions
+        function updateCharCounter(fieldId, counterId) {
+            const field = document.getElementById(fieldId);
+            const counter = document.getElementById(counterId);
+            if (field && counter) {
+                counter.textContent = field.value.length;
+            }
+        }
+
+        function generatePDFs() {
+            const theme = document.getElementById('theme').value || 'Summer';
+            const city = document.getElementById('city').value || 'New Orleans';
+            const district = document.getElementById('district').value || 'CBD';
+            const filename = `${theme}_Passport_${city}_${district}`;
+            
+            alert(`🎉 PDFs Ready to Generate!\n\nFiles:\n📄 ${filename}_Cover_Spread.pdf\n📄 ${filename}_Inside_Spread.pdf\n\n📐 Specifications:\n• Size: 8.75" × 5.75" (with bleed)\n• Resolution: 300 DPI\n• Color: CMYK\n• Ready for printing\n\nNote: Integrate with jsPDF or html2pdf.js for actual PDF generation`);
+        }
+
+        // Initialize the application
+        window.addEventListener('load', function() {
+            updateFrontCover();
+            updateBackCover();
+            generateBusinessForms(1);
+            generateBusinessGrid(1);
+        });
+    </script>
+</body>
+</html>
