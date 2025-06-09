@@ -181,16 +181,13 @@
             background: none;
             margin: 0;
         }
-        
-        /* Front Cover (Right side of spread) */
+          /* Front Cover (Right side of spread) */
         .passport-cover { 
             background: #ffffff;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             height: 100%;
             width: 100%;
+            overflow: hidden;
         }
 
         #imageContainer {
@@ -224,20 +221,6 @@
             height: 100%;
             object-fit: cover;
             display: block;
-        }
-        
-        .cover-title { 
-            font-size: 1.5rem; 
-            font-weight: bold; 
-            color: #8b4513; 
-            margin-bottom: calc(var(--main-gap) * 0.47); 
-            line-height: 1.2; 
-        }
-        
-        .cover-subtitle { 
-            font-size: 1.1rem; 
-            color: #8b4513; 
-            opacity: 0.8; 
         }
         
         /* Back Cover (Left side of spread) */
@@ -499,35 +482,23 @@
         <!-- Front Cover Panel -->
         <div class="panel-container active" id="panel1">
             <div class="content">
-                <div class="form-panel">
-                    <div class="form-section">
+                <div class="form-panel">                    <div class="form-section">
                         <h3>Front Cover</h3>
                         <div class="form-group">
-                            <label for="coverImage">Cover Image</label>
+                            <label for="coverImage">Cover Image (5.5" × 4.25")</label>
                             <div class="file-input-wrapper">
                                 <input type="file" id="coverImage" accept="image/*" class="file-input" onchange="handleImageUpload(this)">
                                 <div class="file-input-display">📸 Click to upload cover image</div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="bgColor">Background Color</label>
-                            <input type="color" id="bgColor" value="#ffffff" class="color-input" onchange="updateFrontCover()">
-                        </div>
-                        <div class="form-group">
-                            <label for="textColor">Text Color</label>
-                            <input type="color" id="textColor" value="#8b4513" class="color-input" onchange="updateFrontCover()">
-                        </div>
                     </div>
                 </div>
                 <div class="preview-wrapper">
-                    <div class="passport-page">
-                        <div class="passport-cover" id="frontCover">
+                    <div class="passport-page">                        <div class="passport-cover" id="frontCover">
                             <div id="imageContainer">
-                                <div class="image-placeholder" id="imagePlaceholder">📸<br>Cover Image</div>
+                                <div class="image-placeholder" id="imagePlaceholder">📸<br>Upload Cover Image</div>
                                 <img class="cover-image" id="coverImagePreview" style="display: none;" alt="Cover Image">
                             </div>
-                            <div class="cover-title" id="frontTitle">Summer Passport New Orleans CBD</div>
-                            <div class="cover-subtitle" id="frontSubtitle">Collect stamps from local businesses</div>
                         </div>
                     </div>
                 </div>
