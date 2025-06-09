@@ -348,17 +348,131 @@
         }
         
         @media (max-width: 768px) {
-            .content { flex-direction: column; gap: var(--main-gap); }
-            .form-panel, .preview-panel { width: 100%; }
-            .passport-spread { flex-direction: column; gap: var(--main-gap); }
+            .content { 
+                flex-direction: column; 
+                gap: calc(var(--main-gap) / 2);
+                padding: calc(var(--main-gap) / 2);
+            }
+            .form-panel, .preview-panel { 
+                width: 100%; 
+                padding: calc(var(--main-gap) / 2);
+            }
+            .passport-spread { 
+                flex-direction: column; 
+                gap: calc(var(--main-gap) / 2); 
+            }
             .passport-page { 
                 width: 100%; 
-                max-width: 350px; 
+                max-width: 408px; 
                 height: auto; 
                 aspect-ratio: 408/528; 
             }
-            .header { flex-direction: column; gap: 15px; text-align: center; }
-            .header-nav { flex-wrap: wrap; justify-content: center; }
+            .preview-wrapper {
+                width: 100%;
+                transform: scale(0.9);
+                transform-origin: top center;
+            }
+            .header { 
+                flex-direction: column; 
+                gap: 15px; 
+                text-align: center;
+                padding: calc(var(--main-gap) / 2);
+            }
+            .header-nav { 
+                flex-wrap: wrap; 
+                justify-content: center;
+                gap: 8px;
+            }
+            .nav-btn {
+                flex: 1;
+                min-width: 120px;
+                max-width: 200px;
+            }
+            .generate-btn {
+                margin-left: 0;
+                flex: 100%;
+            }
+            .form-section {
+                padding: calc(var(--main-gap) / 2);
+            }
+            .business-panel {
+                transform: scale(1);
+                width: 100%;
+                max-width: 408px;
+            }
+            .stamp-container {
+                height: auto;
+                aspect-ratio: 2/1;
+            }
+        }
+
+        @media print {
+            @page {
+                size: portrait;
+                margin: 0;
+            }
+            html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            body { 
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: none !important;
+            }
+            .container, .content, .preview-wrapper {
+                margin: 0 !important;
+                padding: 0 !important;
+                background: none !important;
+                box-shadow: none !important;
+                border: none !important;
+                width: 100% !important;
+                height: 100% !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+            .form-panel, .header, .header-nav {
+                display: none !important;
+            }
+            .passport-page {
+                width: 408px !important;
+                height: 528px !important;
+                margin: auto !important;
+                position: relative !important;
+                left: auto !important;
+                top: auto !important;
+                transform: none !important;
+                background: white !important;
+                overflow: visible !important;
+                border: none !important;
+                page-break-inside: avoid !important;
+            }
+            .business-panel {
+                margin: 0 !important;
+                padding: 0 !important;
+                height: 528px !important;
+                background: white !important;
+                border: none !important;
+                overflow: visible !important;
+            }
+            .stamp-container {
+                print-color-adjust: exact !important;
+                -webkit-print-color-adjust: exact !important;
+                border: 2px solid currentColor !important;
+                margin: 0 !important;
+                min-height: 84px !important;
+            }
+            .stamp-cell:not(:last-child) {
+                border-right: 2px solid currentColor !important;
+            }
+            .stamp-placeholder, .stamp-logo {
+                print-color-adjust: exact !important;
+                -webkit-print-color-adjust: exact !important;
+            }
         }
     </style>
 </head>
