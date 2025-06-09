@@ -4,14 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>City Passport Template Generator</title>
+    <link rel="icon" type="image/x-icon" href="media/passport.ico">
     <style>
+        :root {
+            --main-gap: 32px;
+            --main-radius: 10px;
+            --main-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
             min-height: 100vh; 
-            padding: 20px; 
+            padding: var(--main-gap); 
         }
         
         .container { 
@@ -26,7 +32,7 @@
         .header { 
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); 
             color: white; 
-            padding: 20px; 
+            padding: var(--main-gap); 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
@@ -35,7 +41,7 @@
         .header h1 { font-size: 2rem; margin-bottom: 5px; font-weight: 300; }
         .header p { opacity: 0.9; font-size: 1rem; }
         
-        .header-nav { display: flex; gap: 10px; align-items: center; }
+        .header-nav { display: flex; gap: calc(var(--main-gap) / 3); align-items: center; }
         
         .nav-btn { 
             padding: 10px 15px; 
@@ -51,42 +57,54 @@
         
         .nav-btn:hover { background: #2980b9; transform: translateY(-2px); }
         .nav-btn.active { background: #e74c3c; }
-        .generate-btn { background: #27ae60 !important; margin-left: 20px; }
+        .generate-btn { background: #27ae60 !important; margin-left: var(--main-gap); }
         .generate-btn:hover { background: #229954 !important; }
         
         .panel-container { display: none; }
         .panel-container.active { display: block; }
-        
-        .content { display: flex; min-height: 700px; }
+          .content { 
+            display: flex; 
+            min-height: 700px; 
+            gap: var(--main-gap);
+            padding: var(--main-gap);
+            background: #f8f9fa;
+        }
         
         .form-panel { 
             width: 50%; 
-            padding: 40px; 
-            background: #f8f9fa; 
-            overflow-y: auto; 
+            padding: var(--main-gap); 
+            background: white;
+            border-radius: var(--main-radius);
+            box-shadow: var(--main-shadow);
+            height: calc(100vh - 180px);
+            overflow-y: auto;
         }
         
         .preview-panel { 
-            width: 50%; 
-            padding: 40px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%); 
+            width: 50%;
+            position: sticky;
+            top: var(--main-gap);
+            height: 528px; /* 5.5 inches */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border-radius: var(--main-radius);
+            box-shadow: var(--main-shadow);
         }
         
         .form-section { 
-            margin-bottom: 30px; 
-            padding: 25px; 
+            margin-bottom: var(--main-gap); 
+            padding: calc(var(--main-gap) * 0.78); 
             background: white; 
-            border-radius: 10px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: var(--main-radius); 
+            box-shadow: var(--main-shadow);
             border-left: 4px solid #667eea;
         }
         
         .form-section h3 { 
             color: #2c3e50; 
-            margin-bottom: 20px; 
+            margin-bottom: calc(var(--main-gap) * 0.56); 
             font-size: 1.3rem; 
             display: flex; 
             align-items: center;
@@ -101,7 +119,7 @@
             margin-right: 10px;
         }
         
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: calc(var(--main-gap) * 0.62); }
         
         .form-group label { 
             display: block; 
@@ -140,23 +158,34 @@
         /* Page Layout for Proper Passport Design */
         .passport-spread { 
             display: flex; 
-            gap: 10px; 
+            gap: var(--main-gap); 
             align-items: center; 
-        }
-        
-        .passport-page { 
-            width: 408px; 
-            height: 528px; 
-            border: 1px solid #ddd; 
-            border-radius: 8px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }          .passport-page { 
+            width: 408px; /* 4.25 inches */
+            height: 528px; /* 5.5 inches */
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
             position: relative;
+            background: none;
+            flex-shrink: 0; /* Prevent shrinking */
+            overflow: hidden;
+        }
+          .preview-wrapper {
+            position: sticky;
+            top: var(--main-gap);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            background: none;
+            margin: 0;
         }
         
         /* Front Cover (Right side of spread) */
         .passport-cover { 
             background: #f5e6d3; 
-            padding: 30px; 
+            padding: var(--main-gap); 
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
@@ -174,7 +203,7 @@
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            margin-bottom: 20px; 
+            margin-bottom: var(--main-gap); 
             color: #6c757d; 
             font-size: 1rem; 
             cursor: pointer;
@@ -188,7 +217,7 @@
             height: 180px; 
             object-fit: cover; 
             border-radius: 8px; 
-            margin-bottom: 20px; 
+            margin-bottom: var(--main-gap); 
             border: 2px solid #ddd; 
         }
         
@@ -196,7 +225,7 @@
             font-size: 1.5rem; 
             font-weight: bold; 
             color: #8b4513; 
-            margin-bottom: 15px; 
+            margin-bottom: calc(var(--main-gap) * 0.47); 
             line-height: 1.2; 
         }
         
@@ -209,7 +238,7 @@
         /* Back Cover (Left side of spread) */
         .passport-back { 
             background: white; 
-            padding: 30px; 
+            padding: var(--main-gap); 
             display: flex; 
             flex-direction: column; 
             height: 100%;
@@ -219,7 +248,7 @@
             font-size: 1.3rem; 
             font-weight: 600; 
             color: #2c3e50; 
-            margin-bottom: 30px; 
+            margin-bottom: var(--main-gap); 
             text-align: center; 
             text-transform: uppercase; 
             letter-spacing: 1px; 
@@ -227,7 +256,7 @@
         
         .info-line { 
             display: flex; 
-            margin-bottom: 20px; 
+            margin-bottom: calc(var(--main-gap) * 0.62); 
             align-items: center; 
         }
         
@@ -252,115 +281,76 @@
             color: #495057; 
             line-height: 1.5; 
             border-top: 1px solid #e9ecef; 
-            padding-top: 20px; 
+            padding-top: var(--main-gap); 
         }
         
         .instructions h4 { 
-            margin-bottom: 15px; 
+            margin-bottom: calc(var(--main-gap) * 0.47); 
             font-size: 1rem; 
             color: #2c3e50; 
             font-weight: 600; 
         }
-        
-        .instructions p { margin-bottom: 8px; }
-        
-        /* Business Grid Styles */
-        .business-panel { 
-            background: white; 
-            padding: 15px; 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            grid-template-rows: repeat(4, 1fr); 
-            gap: 4px; 
-            height: 100%;
+          .instructions p { margin-bottom: 8px; }        /* Business Grid Styles */        .business-panel { 
+            background: #ffffff;
+            padding: 2px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            gap: 2px;
+            height: 528px;
+            width: 408px;
+            align-items: stretch;
+            box-sizing: border-box;
+            margin: 0;
+        }.stamp-container-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            width: 100%;
+        }.stamp-container {
+            display: flex;
+            gap: 0;
+            background: #ffffff;
+            border-radius: 2px;
+            border: 2px solid currentColor; /* Will inherit from parent's color */
+            overflow: hidden;            align-items: stretch;            width: 100%;
+            height: 84px;
+            box-shadow: none;
+            margin: 0;
         }
-        
-        .business-box { 
-            border: 1px solid #ddd; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 0.6rem; 
-            text-align: center; 
-            padding: 4px; 
-            overflow: hidden; 
-            border-radius: 4px;
+        .stamp-cell {
+            flex: 1 1 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 0;
+            min-width: 0;
+            background: none;
+            border: none;
+            position: relative;
+            color: #8b4513; /* Set default color */
         }
-        
-        .logo-box { 
-            background: #f8f9fa; 
-            transition: background 0.2s ease;
+        .stamp-cell:not(:last-child) {
+            border-right: 2px solid currentColor; /* Will use parent's color */
         }
-        
-        .logo-box:hover { background: #e9ecef; }
-        
-        .stamp-box { 
-            background: #fff3cd; 
-            color: #856404; 
-            font-weight: bold; 
-            transition: background 0.2s ease;
-        }
-        
-        .stamp-box:hover { background: #ffeaa7; }
-        
-        .business-logo { 
-            width: 20px; 
-            height: 20px; 
-            object-fit: contain; 
-            margin-bottom: 2px; 
-        }
-        
-        .business-name { 
-            font-size: 0.5rem; 
-            line-height: 1.1; 
-            font-weight: 500;
-        }
-        
-        .file-input-wrapper { position: relative; display: inline-block; width: 100%; }
-        .file-input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
-        
-        .file-input-display { 
-            padding: 12px; 
-            border: 2px dashed #e9ecef; 
-            border-radius: 8px; 
-            text-align: center; 
-            background: #f8f9fa; 
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .file-input-display:hover { 
-            border-color: #667eea; 
-            background: #f0f8ff; 
-        }
-        
-        .business-form { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-            gap: 20px; 
-        }
-        
-        .business-item { 
-            padding: 15px; 
-            background: white; 
-            border-radius: 8px; 
-            border: 2px solid #e9ecef; 
-            transition: border-color 0.3s ease;
-        }
-        
-        .business-item:hover { border-color: #667eea; }
-        
-        .business-item h4 { 
-            color: #2c3e50; 
-            margin-bottom: 10px; 
-            font-size: 1rem; 
+        .stamp-placeholder {
+            font-size: 1.75rem;
+            color: #8b4513; /* Match cover text color */
+            opacity: 0.3;
+            font-weight: bold;
+        }        .stamp-logo {
+            width: 85%;
+            height: 85%;
+            object-fit: contain;
+            display: block;
+            margin: auto;
+            padding: 2px;
         }
         
         @media (max-width: 768px) {
-            .content { flex-direction: column; }
+            .content { flex-direction: column; gap: var(--main-gap); }
             .form-panel, .preview-panel { width: 100%; }
-            .passport-spread { flex-direction: column; }
+            .passport-spread { flex-direction: column; gap: var(--main-gap); }
             .passport-page { 
                 width: 100%; 
                 max-width: 350px; 
@@ -378,17 +368,16 @@
             <div>
                 <h1>City Passport Generator</h1>
                 <p>Create themed stamp collection passports for local businesses</p>
-            </div>
-            <div class="header-nav">
+            </div>            <div class="header-nav">
                 <button class="nav-btn active" onclick="showPanel(1)">Front Cover</button>
                 <button class="nav-btn" onclick="showPanel(2)">Back Cover</button>
-                <button class="nav-btn" onclick="showPanel(3)">Inside Left</button>
-                <button class="nav-btn" onclick="showPanel(4)">Inside Right</button>
+                <button class="nav-btn" onclick="showPanel(3)">Business Info</button>
+                <button class="nav-btn" onclick="showPanel(4)">Stamp Grid</button>
                 <button class="nav-btn generate-btn" onclick="generatePDFs()">📄 Generate PDFs</button>
             </div>
         </div>
 
-        <!-- Panel 1: Front Cover -->
+        <!-- Front Cover Panel -->
         <div class="panel-container active" id="panel1">
             <div class="content">
                 <div class="form-panel">
@@ -421,13 +410,9 @@
                                 <div class="file-input-display">📸 Click to upload cover image</div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="form-section">
-                        <h3>Design Colors</h3>
                         <div class="form-group">
                             <label for="bgColor">Background Color</label>
-                            <input type="color" id="bgColor" value="#f5e6d3" class="color-input" onchange="updateFrontCover()">
+                            <input type="color" id="bgColor" value="#ffffff" class="color-input" onchange="updateFrontCover()">
                         </div>
                         <div class="form-group">
                             <label for="textColor">Text Color</label>
@@ -435,8 +420,7 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="preview-panel">
+                <div class="preview-wrapper">
                     <div class="passport-page">
                         <div class="passport-cover" id="frontCover">
                             <div id="imageContainer">
@@ -451,7 +435,7 @@
             </div>
         </div>
 
-        <!-- Panel 2: Back Cover -->
+        <!-- Back Cover Panel -->
         <div class="panel-container" id="panel2">
             <div class="content">
                 <div class="form-panel">
@@ -471,8 +455,7 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="preview-panel">
+                <div class="preview-wrapper">
                     <div class="passport-page">
                         <div class="passport-back">
                             <div class="back-title" id="backTitlePreview">YOUR INFORMATION</div>
@@ -506,44 +489,47 @@
             </div>
         </div>
 
-        <!-- Panel 3: Inside Left -->
+        <!-- Business Info Panel -->
         <div class="panel-container" id="panel3">
             <div class="content">
                 <div class="form-panel">
                     <div class="form-section">
-                        <h3>Businesses 1-6</h3>
-                        <div class="business-form" id="businessForm1">
-                            <!-- Business forms 1-6 will be generated here -->
-                        </div>
+                        <h3>Business Information</h3>
+                        <form id="businessInfoForm">
+                            <div class="business-form" id="businessFormAll">
+                                <!-- Generated by JavaScript -->
+                            </div>
+                        </form>
                     </div>
                 </div>
-
-                <div class="preview-panel">
-                    <div class="passport-page">
-                        <div class="business-panel" id="businessGrid1">
-                            <!-- Business grid 1-6 will be generated here -->
+                <div class="preview-wrapper">
+                    <div class="form-section" style="width: 408px; height: 528px; overflow-y: auto;">
+                        <h3>Business Preview</h3>
+                        <div id="businessInfoPreview">
+                            <!-- Generated by JavaScript -->
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Panel 4: Inside Right -->
+        </div>        <!-- Stamp Grid Panel -->
         <div class="panel-container" id="panel4">
-            <div class="content">
-                <div class="form-panel">
+            <div class="content" style="justify-content: center;">
+                <div class="form-panel" style="width: auto; margin-right: 16px;">
                     <div class="form-section">
-                        <h3>Businesses 7-12</h3>
-                        <div class="business-form" id="businessForm2">
-                            <!-- Business forms 7-12 will be generated here -->
+                        <h3>Stamp Grid Settings</h3>
+                        <div class="form-group">
+                            <label for="stampBorderColor">Border Color</label>
+                            <input type="color" id="stampBorderColor" value="#8b4513" class="color-input" onchange="updateStampColors()">
                         </div>
+                        <button class="nav-btn" onclick="printStampGrid()" style="width: 100%; margin-top: 16px;">
+                            🖨️ Print Stamp Grid
+                        </button>
                     </div>
                 </div>
-
-                <div class="preview-panel">
+                <div class="preview-wrapper" style="width: auto; padding: var(--main-gap);">
                     <div class="passport-page">
-                        <div class="business-panel" id="businessGrid2">
-                            <!-- Business grid 7-12 will be generated here -->
+                        <div class="business-panel" id="businessGridAll">
+                            <!-- Generated by JavaScript -->
                         </div>
                     </div>
                 </div>
@@ -582,11 +568,8 @@
             
             // Initialize panel if needed
             if (num === 3) {
-                generateBusinessForms(1);
-                generateBusinessGrid(1);
-            } else if (num === 4) {
-                generateBusinessForms(2);
-                generateBusinessGrid(2);
+                generateAllBusinessForms();
+                updateBusinessInfoAndStampGrid();
             }
         }
 
@@ -607,6 +590,12 @@
             document.getElementById('frontCover').style.backgroundColor = bgColor;
             document.getElementById('frontTitle').style.color = textColor;
             document.getElementById('frontSubtitle').style.color = textColor;
+
+            // Update stamp container colors
+            const stampCells = document.querySelectorAll('.stamp-cell');
+            stampCells.forEach(cell => {
+                cell.style.color = textColor;
+            });
             
             // Update character counters
             updateCharCounter('theme', 'themeCount');
@@ -649,24 +638,25 @@
             }
         }
 
-        // Business Grid Functions
-        function generateBusinessForms(gridNum) {
-            const container = document.getElementById(`businessForm${gridNum}`);
-            const startIdx = gridNum === 1 ? 0 : 6;
-            const endIdx = gridNum === 1 ? 6 : 12;
-            
+        // Combined Biz Info + Stamp Grid Panel
+        function generateAllBusinessForms() {
+            const container = document.getElementById('businessFormAll');
             let html = '';
-            for (let i = startIdx; i < endIdx; i++) {
+            for (let i = 0; i < 12; i++) {
                 html += `
                     <div class="business-item">
-                        <h4>Business ${i + 1}</h4>
+                        <h4>Business ${i + 1}: <span style='font-weight:normal;'>${sampleBusinesses[i]}</span></h4>
                         <div class="form-group">
-                            <label>Business Name</label>
-                            <input type="text" id="business${i}" placeholder="${sampleBusinesses[i]}" maxlength="25" onkeyup="updateBusinessGrid(${gridNum})">
+                            <label for="businessName${i}">Business Name</label>
+                            <input type="text" id="businessName${i}" placeholder="${sampleBusinesses[i]}" maxlength="25" onkeyup="updateBusinessInfoAndStampGrid()">
                         </div>
                         <div class="form-group">
-                            <label>Logo Image</label>
-                            <input type="file" accept="image/*" onchange="handleBusinessLogo(${i}, this)">
+                            <label for="businessDesc${i}">Description</label>
+                            <input type="text" id="businessDesc${i}" placeholder="Short description" maxlength="50" onkeyup="updateBusinessInfoAndStampGrid()">
+                        </div>
+                        <div class="form-group">
+                            <label for="businessLogo${i}">Logo Image</label>
+                            <input type="file" id="businessLogo${i}" accept="image/*" onchange="handleBusinessLogoAndStamp(${i}, this)">
                         </div>
                     </div>
                 `;
@@ -674,63 +664,128 @@
             container.innerHTML = html;
         }
 
-        function generateBusinessGrid(gridNum) {
-            const container = document.getElementById(`businessGrid${gridNum}`);
-            const startIdx = gridNum === 1 ? 0 : 6;
-            const endIdx = gridNum === 1 ? 6 : 12;
-            
-            container.innerHTML = '';
-            for (let i = startIdx; i < endIdx; i++) {
-                // Logo box
-                const logoBox = document.createElement('div');
-                logoBox.className = 'business-box logo-box';
-                logoBox.innerHTML = `<img id="logo${i}" class="business-logo" style="display: none;"><div class="business-name" id="name${i}">${sampleBusinesses[i]}</div>`;
-                
-                // Stamp box
-                const stampBox = document.createElement('div');
-                stampBox.className = 'business-box stamp-box';
-                stampBox.innerHTML = 'STAMP';
-                
-                container.appendChild(logoBox);
-                container.appendChild(stampBox);
-            }
-        }
+        // Store uploaded logos for both previews
+        const businessLogos = Array(12).fill(null);
 
-        function updateBusinessGrid(gridNum) {
-            const startIdx = gridNum === 1 ? 0 : 6;
-            const endIdx = gridNum === 1 ? 6 : 12;
-            
-            for (let i = startIdx; i < endIdx; i++) {
-                const input = document.getElementById(`business${i}`);
-                const nameElement = document.getElementById(`name${i}`);
-                if (input && nameElement) {
-                    nameElement.textContent = input.value || sampleBusinesses[i];
-                }
-            }
-        }
-
-        function handleBusinessLogo(index, input) {
+        function handleBusinessLogoAndStamp(index, input) {
             const file = input.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const logo = document.getElementById(`logo${index}`);
-                    if (logo) {
-                        logo.src = e.target.result;
-                        logo.style.display = 'block';
-                    }
+                    businessLogos[index] = e.target.result;
+                    updateBusinessInfoAndStampGrid();
                 };
                 reader.readAsDataURL(file);
             }
         }
 
-        // Utility Functions
-        function updateCharCounter(fieldId, counterId) {
-            const field = document.getElementById(fieldId);
-            const counter = document.getElementById(counterId);
-            if (field && counter) {
-                counter.textContent = field.value.length;
+        function updateBusinessInfoAndStampGrid() {
+            // Biz Info Preview
+            const container = document.getElementById('businessInfoPreview');
+            let html = '<ol style="padding-left: 1.2em;">';
+            for (let i = 0; i < 12; i++) {
+                const name = document.getElementById(`businessName${i}`)?.value || sampleBusinesses[i];
+                const desc = document.getElementById(`businessDesc${i}`)?.value || '';
+                let logoImg = '';
+                if (businessLogos[i]) {
+                    logoImg = `<img src="${businessLogos[i]}" alt="Logo" style="width:24px;height:24px;vertical-align:middle;margin-right:8px;">`;
+                }
+                html += `<li style="margin-bottom: 12px;display:flex;align-items:center;">
+                    <span>${logoImg}</span>
+                    <span><strong>${name}</strong>${desc ? ' — ' + desc : ''}</span>
+                </li>`;
             }
+            html += '</ol>';
+            container.innerHTML = html;
+            // Stamp Grid Preview
+            generateStampGridCombined();
+        }        function generateStampGridCombined() {
+            const container = document.getElementById('businessGridAll');
+            container.innerHTML = '';
+            
+            // Create 6 pairs of businesses (1&7, 2&8, etc)
+            for (let i = 0; i < 6; i++) {
+                // Calculate the indices for each pair
+                const firstIndex = i;           // 0,1,2,3,4,5
+                const secondIndex = i + 6;      // 6,7,8,9,10,11
+                
+                // Create containers for both businesses in the pair
+                const container1 = document.createElement('div');
+                container1.className = 'stamp-container';
+                const container2 = document.createElement('div');
+                container2.className = 'stamp-container';
+                
+                // First business of the pair
+                const logoCell1 = document.createElement('div');
+                logoCell1.className = 'stamp-cell';
+                if (businessLogos[firstIndex]) {
+                    const img = document.createElement('img');
+                    img.src = businessLogos[firstIndex];
+                    img.alt = `Logo ${firstIndex + 1}`;
+                    img.className = 'stamp-logo';
+                    logoCell1.appendChild(img);
+                } else {
+                    const span = document.createElement('span');
+                    span.className = 'stamp-placeholder';
+                    span.textContent = (firstIndex + 1).toString();
+                    logoCell1.appendChild(span);
+                }
+                const stampCell1 = document.createElement('div');
+                stampCell1.className = 'stamp-cell';
+                container1.appendChild(logoCell1);
+                container1.appendChild(stampCell1);
+                
+                // Second business of the pair
+                const logoCell2 = document.createElement('div');
+                logoCell2.className = 'stamp-cell';
+                if (businessLogos[secondIndex]) {
+                    const img = document.createElement('img');
+                    img.src = businessLogos[secondIndex];
+                    img.alt = `Logo ${secondIndex + 1}`;
+                    img.className = 'stamp-logo';
+                    logoCell2.appendChild(img);
+                } else {
+                    const span = document.createElement('span');
+                    span.className = 'stamp-placeholder';
+                    span.textContent = (secondIndex + 1).toString();
+                    logoCell2.appendChild(span);
+                }
+                const stampCell2 = document.createElement('div');
+                stampCell2.className = 'stamp-cell';
+                container2.appendChild(logoCell2);
+                container2.appendChild(stampCell2);                // Add containers directly to grid
+                const wrapper1 = document.createElement('div');
+                wrapper1.className = 'stamp-container-wrapper';
+                wrapper1.appendChild(container1);
+                
+                const wrapper2 = document.createElement('div');
+                wrapper2.className = 'stamp-container-wrapper';
+                wrapper2.appendChild(container2);
+                
+                // Add wrappers to the grid
+                container.appendChild(wrapper1);
+                container.appendChild(wrapper2);
+            }
+        }
+
+        // Panel Navigation: show combined panel for 3, hide 4
+        function showPanel(num) {
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`panel${i}`)?.classList.remove('active');
+            }
+            if (num === 3 || num === 4) {
+                document.getElementById(`panel${num}`).classList.add('active');
+                generateAllBusinessForms();
+                updateBusinessInfoAndStampGrid();
+            } else {
+                document.getElementById(`panel${num}`)?.classList.add('active');
+            }
+            // Update navigation
+            const buttons = document.querySelectorAll('.nav-btn');
+            for (let i = 0; i < buttons.length - 1; i++) {
+                buttons[i].classList.remove('active');
+            }
+            buttons[num - 1].classList.add('active');
         }
 
         function generatePDFs() {
@@ -746,9 +801,93 @@
         window.addEventListener('load', function() {
             updateFrontCover();
             updateBackCover();
-            generateBusinessForms(1);
-            generateBusinessGrid(1);
-        });
+            generateAllBusinessForms();
+            updateBusinessInfoAndStampGrid();
+        });        function updateStampColors() {
+            const borderColor = document.getElementById('stampBorderColor').value;
+            // Update stamp cell borders
+            const stampCells = document.querySelectorAll('.stamp-cell');
+            stampCells.forEach(cell => {
+                cell.style.color = borderColor;
+            });
+            // Update stamp placeholders
+            const placeholders = document.querySelectorAll('.stamp-placeholder');
+            placeholders.forEach(placeholder => {
+                placeholder.style.color = borderColor;
+            });
+            // Update business panel border
+            const businessPanel = document.querySelector('.business-panel');
+            if (businessPanel) {
+                businessPanel.style.borderColor = borderColor;
+            }
+            // Update stamp container borders
+            const stampContainers = document.querySelectorAll('.stamp-container');
+            stampContainers.forEach(container => {
+                container.style.borderColor = borderColor;
+            });
+        }        function printStampGrid() {
+            const borderColor = document.getElementById('stampBorderColor').value;
+            const printStyles = document.createElement('style');
+            printStyles.textContent = `
+                @page {
+                    size: letter;
+                    margin: 0;
+                }
+                @media print {
+                    body { 
+                        margin: 0;
+                        padding: 0;
+                        background: none !important;
+                    }
+                    .container, .content, .preview-wrapper {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        background: none !important;
+                        box-shadow: none !important;
+                        border: none !important;
+                    }
+                    .form-panel, .header, .header-nav {
+                        display: none !important;
+                    }
+                    .passport-page {
+                        position: fixed !important;
+                        left: 50% !important;
+                        top: 50% !important;
+                        transform: translate(-50%, -50%) !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        box-shadow: none !important;
+                        width: 408px !important;
+                        height: 528px !important;
+                        background: white !important;
+                        overflow: visible !important;
+                        border: none !important;
+                    }
+                    .business-panel {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        height: 528px !important;
+                        background: white !important;
+                        border: none !important;
+                        overflow: visible !important;
+                    }
+                    .stamp-container {
+                        print-color-adjust: exact;
+                        -webkit-print-color-adjust: exact;
+                        border: 2px solid ${borderColor} !important;
+                        margin: 0 !important;
+                    }
+                    .stamp-cell:not(:last-child) {
+                        border-right: 2px solid ${borderColor} !important;
+                    }
+                }
+            `;
+            document.head.appendChild(printStyles);
+            window.print();
+            document.head.removeChild(printStyles);
+        }
+
+        // ... rest of your existing code ...
     </script>
 </body>
 </html>
